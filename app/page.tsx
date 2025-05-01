@@ -1,17 +1,10 @@
 "use client"
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useConnect } from 'wagmi';
 
 
 export default function Home() {
-  const [isConnected, setIsConnected] = useState(false);
   const {connect, connectors} = useConnect()
-  const handleConnect = () => {
-    setIsConnected(true);
-    console.log(connectors[0].name)
-    connect({connector: connectors[0]})
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white font-[family-name:var(--font-geist-sans)]">
@@ -29,7 +22,6 @@ export default function Home() {
               <button
                 key={connector.id}
                 onClick={() => {
-                  setIsConnected(true);
                   connect({ connector });
                 }}
                 className="p-2 hover:bg-gray-800 rounded-full transition-colors"
@@ -75,9 +67,6 @@ export default function Home() {
           </section>
         </motion.div>
       </main>
-
-        
-      
     </div>
   );
 }
