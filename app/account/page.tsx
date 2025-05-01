@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAccount, useDisconnect, useEnsName, useEnsAvatar } from "wagmi";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const Account = () => {
   const [isClient, setIsClient] = useState(false);
@@ -12,7 +13,7 @@ const Account = () => {
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
-
+  const router = useRouter()
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center p-2">
       <motion.div
@@ -37,7 +38,7 @@ const Account = () => {
           </div>
         </div>
         <button
-          onClick={() => disconnect()}
+          onClick={() => {disconnect(); router.push('/') }}
           className="mt-6 px-6 cursor-pointer py-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-300 transform hover:scale-105"
         >
           Disconnect
