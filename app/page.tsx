@@ -1,9 +1,14 @@
 "use client"
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { useConnect } from 'wagmi';
 
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   const {connect, connectors} = useConnect()
 
   return (
@@ -18,13 +23,13 @@ export default function Home() {
             <h1 className="text-2xl font-bold">CryptoLoan</h1>
           </motion.div>
           <div className="flex gap-2">
-            {connectors.map((connector) => (
+            {isClient && connectors && connectors.map((connector) => (
               <button
                 key={connector.id}
                 onClick={() => {
                   connect({ connector });
                 }}
-                className="p-2 hover:bg-gray-800 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-800 rounded-full cursor-pointer transition-colors"
               >
                 <img
                   src={`${connector.icon ? connector.icon : 'icons/'+connector.name+'.svg'}`}
