@@ -1,14 +1,34 @@
 "use client";
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAccount, useWriteContract } from "wagmi";
+import abi from "../abis/cryptoloan.json";
+import { parseEther } from "viem";
 
 const LoanPage = () => {
   const [amount, setAmount] = useState('');
   const [period, setPeriod] = useState('');
+  const { writeContract } = useWriteContract();
+  const { address } = useAccount();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission
+    writeContract(
+      {
+        abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        functionName: "takeLoan",
+        account: address,
+        value: parseEther(amount),
+        args: [parseEther(amount),parseInt(period)],
+      },
+      {
+        onSuccess: () => {
+          console.log("ETH stored successfully");
+          alert("ETH loaned successfully");
+        },
+      }
+    );
   };
 
   return (

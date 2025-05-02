@@ -1,14 +1,32 @@
 "use client";
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useAccount, useWriteContract } from "wagmi";
+import abi from "../abis/cryptoloan.json";
+import { parseEther } from "viem";
 const StorePage = () => {
-  const [amount, setAmount] = useState('');
-  const [period, setPeriod] = useState('');
+  const [amount, setAmount] = useState("");
+  const [period, setPeriod] = useState("");
+  const { writeContract } = useWriteContract();
+  const { address } = useAccount();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-   e.preventDefault();
-    // Handle form submission
+    e.preventDefault();
+    writeContract(
+      {
+        abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        functionName: "store",
+        account: address,
+        value: parseEther(amount),
+      },
+      {
+        onSuccess: () => {
+          console.log("ETH stored successfully");
+          alert("ETH stored successfully");
+        },
+      }
+    );
   };
 
   return (
@@ -22,7 +40,10 @@ const StorePage = () => {
         <h1 className="text-3xl font-bold mb-8">Store ETH</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-300">
+            <label
+              htmlFor="amount"
+              className="block text-sm font-medium text-gray-300"
+            >
               Amount (ETH)
             </label>
             <input
@@ -36,7 +57,10 @@ const StorePage = () => {
             />
           </div>
           <div>
-            <label htmlFor="period" className="block text-sm font-medium text-gray-300">
+            <label
+              htmlFor="period"
+              className="block text-sm font-medium text-gray-300"
+            >
               Period (days)
             </label>
             <input
