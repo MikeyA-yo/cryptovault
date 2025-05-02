@@ -29,8 +29,7 @@ export default function Home() {
                 <button
                   key={connector.id}
                   onClick={() => {
-                    connect({ connector });
-                    router.push("/account");
+                    connect({ connector }, { onSuccess: () => {router.push("/account");}});
                   }}
                   className="p-2 hover:bg-gray-800 rounded-full cursor-pointer transition-colors"
                 >

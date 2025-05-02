@@ -38,7 +38,7 @@ const Account = () => {
           </div>
         </div>
         <button
-          onClick={() => {disconnect(); router.push('/') }}
+          onClick={() => {disconnect(void 0, {onSuccess: ()=> {router.push('/')}});  }}
           className="mt-6 px-6 cursor-pointer py-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-300 transform hover:scale-105"
         >
           Disconnect
