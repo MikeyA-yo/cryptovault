@@ -29,6 +29,20 @@ const Account = () => {
     account: address,
     functionName:"getUserBalance"
   })
+  const { data: loanData } = useReadContract({
+    abi,
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    account: address,
+    functionName:"loans",
+    args: [address]
+  })
+  const [repayAmount, setRepayAmount] = useState('');
+  const { data: isOverdue } = useReadContract({
+    abi,
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    account: address,
+    functionName:"isLoanOverdue"
+  })
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const { writeContract } = useWriteContract();
@@ -93,6 +107,38 @@ const Account = () => {
             <p className="text-gray-200 text-sm">Your Balance</p>
             <p className="text-white font-bold text-xl">{balance ? formatEther(BigInt(Math.floor(Number(balance)))) : '0'} ETH</p>
           </div>
+        </div>
+        <div className="mt-6 space-y-4">
+        {typeof loanData === 'bigint' && loanData > BigInt(0) && (
+            <div className="p-4 bg-white/10 rounded-lg">
+            <p className="text-gray-200 text-sm">Your Loan</p>
+            <p className="text-white font-bold text-xl">{formatEther(BigInt(Math.floor(Number(loanData))))} ETH</p>
+            <button
+              onClick={() => {
+                const interestRate = isOverdue ? 1.5 : 1.1;
+                const repaymentAmount = Number(loanData.toString()) * interestRate;
+                writeContract({
+                  abi,
+                  address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+                  functionName: 'repayLoan',
+                  account: address,
+                  value: parseEther(repaymentAmount.toString())
+                }, {
+                  onSuccess: () => {
+                    setToast({ type: 'success', message: 'Loan repaid successfully' });
+                  },
+                  onError: (error) => {
+                    console.error('Loan repayment failed', error);
+                    setToast({ type: 'error', message: 'Loan repayment failed' });
+                  }
+                });
+              }}
+              className="w-full mt-2 px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-300 transform hover:scale-105"
+            >
+              Repay Loan ({isOverdue ? '50%' : '10%'} interest)
+            </button>
+          </div>
+          )}
         </div>
         <form onSubmit={handleWithdraw} className="mt-6 space-y-4">
           <div className="p-4 bg-white/10 rounded-lg">

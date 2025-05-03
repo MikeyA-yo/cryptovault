@@ -30,7 +30,7 @@ const LoanPage = () => {
         },
         onError: (error) => {
           console.error("ETH loan failed", error);
-          setToast({ type: 'error', message: 'ETH loan failed' });
+          setToast({ type: 'error', message: 'ETH loan failed, if this persists, the smart contract does not have enough sepolia eth to loan' });
         },
       }
     );
@@ -76,7 +76,7 @@ const LoanPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200"
+            className="w-full cursor-pointer px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200"
           >
             Borrow ETH
           </button>
