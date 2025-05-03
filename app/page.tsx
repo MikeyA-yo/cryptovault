@@ -59,7 +59,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold">Your Web3 Vault</h2>
             <div className="bg-blue-900/20 p-4 rounded-lg mb-4">
               <p className="text-blue-300">
-                To use CryptoLoan, you'll need a Web3 wallet like MetaMask or Brave Wallet installed in your browser.
+                To use CryptoLoan, you&apos;ll need a Web3 wallet like MetaMask or Brave Wallet installed in your browser.
               </p>
             </div>
             <p className="text-gray-400 max-w-2xl mx-auto">
