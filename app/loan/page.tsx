@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAccount, useWriteContract } from "wagmi";
 import abi from "../abis/cryptoloan.json";
 import { parseEther } from "viem";
@@ -8,6 +8,7 @@ import { parseEther } from "viem";
 const LoanPage = () => {
   const [amount, setAmount] = useState('');
   const [period, setPeriod] = useState('');
+  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
 
@@ -24,8 +25,12 @@ const LoanPage = () => {
       },
       {
         onSuccess: () => {
-          console.log("ETH stored successfully");
-          alert("ETH loaned successfully");
+          console.log("ETH loaned successfully");
+          setToast({ type: 'success', message: 'ETH loaned successfully' });
+        },
+        onError: (error) => {
+          console.error("ETH loan failed", error);
+          setToast({ type: 'error', message: 'ETH loan failed' });
         },
       }
     );
@@ -77,6 +82,20 @@ const LoanPage = () => {
           </button>
         </form>
       </motion.div>
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-4 right-4 p-4 rounded-md text-white"
+            style={{ backgroundColor: toast.type === 'success' ? '#4CAF50' : '#F44336' }}
+          >
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

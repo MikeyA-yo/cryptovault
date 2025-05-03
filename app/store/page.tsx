@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { useAccount, useWriteContract } from "wagmi";
 import abi from "../abis/cryptoloan.json";
 import { parseEther } from "viem";
 const StorePage = () => {
   const [amount, setAmount] = useState("");
-  const [period, setPeriod] = useState("");
+  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
 
@@ -23,7 +24,11 @@ const StorePage = () => {
       {
         onSuccess: () => {
           console.log("ETH stored successfully");
-          alert("ETH stored successfully");
+          setToast({ type: 'success', message: 'ETH stored successfully' });
+        },
+        onError: (error) => {
+          console.error("ETH storage failed", error);
+          setToast({ type: 'error', message: 'ETH storage failed' });
         },
       }
     );
@@ -56,31 +61,28 @@ const StorePage = () => {
               required
             />
           </div>
-          <div>
-            <label
-              htmlFor="period"
-              className="block text-sm font-medium text-gray-300"
-            >
-              Period (days)
-            </label>
-            <input
-              type="number"
-              id="period"
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Enter period"
-              required
-            />
-          </div>
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200"
+            className="w-full px-4 cursor-pointer py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200"
           >
             Store ETH
           </button>
         </form>
       </motion.div>
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-4 right-4 p-4 rounded-md text-white"
+            style={{ backgroundColor: toast.type === 'success' ? '#4CAF50' : '#F44336' }}
+          >
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

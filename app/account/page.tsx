@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAccount, useDisconnect, useEnsName, useEnsAvatar } from "wagmi";
+import { useAccount, useDisconnect, useEnsName, useEnsAvatar, useReadContract } from "wagmi";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import abi from "../abis/cryptoloan.json";
+import { formatEther, parseEther } from "viem";
 
 const Account = () => {
   const [isClient, setIsClient] = useState(false);
@@ -13,7 +15,21 @@ const Account = () => {
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
-  const router = useRouter()
+  const router = useRouter();
+  const data = useReadContract({
+    abi,
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    account: address,
+    functionName:"getHighestBalance"
+  })
+  const increasedValue = data.data ? Number(data.data) * 2.5 : 0;
+  const { data: balance } = useReadContract({
+    abi,
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    account: address,
+    functionName:"getUserBalance"
+  })
+  console.log(balance);
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center p-2">
       <motion.div
@@ -43,6 +59,16 @@ const Account = () => {
         >
           Disconnect
         </button>
+        <div className="mt-6 space-y-4">
+          <div className="p-4 bg-white/10 rounded-lg">
+            <p className="text-gray-200 text-sm">Possible Loan Value</p>
+            <p className="text-white font-bold text-xl">{formatEther(BigInt(Math.floor(increasedValue)))} ETH</p>
+          </div>
+          <div className="p-4 bg-white/10 rounded-lg">
+            <p className="text-gray-200 text-sm">Your Balance</p>
+            <p className="text-white font-bold text-xl">{balance ? formatEther(BigInt(Math.floor(Number(balance)))) : '0'} ETH</p>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
