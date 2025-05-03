@@ -1,15 +1,18 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useWriteContract } from "wagmi";
 import abi from "../abis/cryptoloan.json";
 import { parseEther } from "viem";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const LoanPage = () => {
-  const [amount, setAmount] = useState('');
-  const [period, setPeriod] = useState('');
-  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [amount, setAmount] = useState("");
+  const [period, setPeriod] = useState("");
+  const [toast, setToast] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
   const router = useRouter();
@@ -22,28 +25,33 @@ const LoanPage = () => {
         functionName: "takeLoan",
         account: address,
         value: parseEther(amount),
-        args: [parseEther(amount),parseInt(period)],
+        args: [parseEther(amount), parseInt(period)],
       },
       {
         onSuccess: () => {
           console.log("ETH loaned successfully");
-          setToast({ type: 'success', message: 'ETH loaned successfully' });
+          setToast({ type: "success", message: "ETH loaned successfully" });
         },
         onError: (error) => {
           console.error("ETH loan failed", error);
-          setToast({ type: 'error', message: 'ETH loan failed, if this persists, the smart contract does not have enough sepolia eth to loan' });
+          setToast({
+            type: "error",
+            message:
+              "ETH loan failed, if this persists, the smart contract does not have enough sepolia eth to loan",
+          });
         },
       }
     );
   };
   useEffect(() => {
     if (!address) {
-      setToast({ type: 'error', message: 'Please connect your wallet' });
+      setToast({ type: "error", message: "Please connect your wallet" });
+
+      setTimeout(() => {
+        router.push("/");
+      }, 2500);
     }
-    setTimeout(() => {
-      router.push('/')
-    }, 2500)
-  }, [])
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
@@ -56,7 +64,10 @@ const LoanPage = () => {
         <h1 className="text-3xl font-bold mb-8">Borrow ETH</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-300">
+            <label
+              htmlFor="amount"
+              className="block text-sm font-medium text-gray-300"
+            >
               Amount (ETH)
             </label>
             <input
@@ -70,7 +81,10 @@ const LoanPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="period" className="block text-sm font-medium text-gray-300">
+            <label
+              htmlFor="period"
+              className="block text-sm font-medium text-gray-300"
+            >
               Period (days)
             </label>
             <input
@@ -99,7 +113,9 @@ const LoanPage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-4 right-4 p-4 rounded-md text-white"
-            style={{ backgroundColor: toast.type === 'success' ? '#4CAF50' : '#F44336' }}
+            style={{
+              backgroundColor: toast.type === "success" ? "#4CAF50" : "#F44336",
+            }}
           >
             {toast.message}
           </motion.div>

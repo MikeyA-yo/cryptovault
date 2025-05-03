@@ -40,11 +40,11 @@ const StorePage = () => {
   useEffect(() => {
     if (!address) {
       setToast({ type: "error", message: "Please connect your wallet" });
+      setTimeout(() => {
+        router.push("/");
+      }, 2500);
     }
 
-    setTimeout(() => {
-      router.push("/");
-    }, 2500);
   }, []);
 
   return (
