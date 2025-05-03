@@ -1,16 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { useAccount, useWriteContract } from "wagmi";
 import abi from "../abis/cryptoloan.json";
 import { parseEther } from "viem";
+import { useRouter } from "next/navigation";
 const StorePage = () => {
   const [amount, setAmount] = useState("");
-  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [toast, setToast] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
-
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     writeContract(
@@ -24,15 +28,24 @@ const StorePage = () => {
       {
         onSuccess: () => {
           console.log("ETH stored successfully");
-          setToast({ type: 'success', message: 'ETH stored successfully' });
+          setToast({ type: "success", message: "ETH stored successfully" });
         },
         onError: (error) => {
           console.error("ETH storage failed", error);
-          setToast({ type: 'error', message: 'ETH storage failed' });
+          setToast({ type: "error", message: "ETH storage failed" });
         },
       }
     );
   };
+  useEffect(() => {
+    if (!address) {
+      setToast({ type: "error", message: "Please connect your wallet" });
+    }
+
+    setTimeout(() => {
+      router.push("/");
+    }, 2500);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
@@ -77,7 +90,9 @@ const StorePage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-4 right-4 p-4 rounded-md text-white"
-            style={{ backgroundColor: toast.type === 'success' ? '#4CAF50' : '#F44336' }}
+            style={{
+              backgroundColor: toast.type === "success" ? "#4CAF50" : "#F44336",
+            }}
           >
             {toast.message}
           </motion.div>

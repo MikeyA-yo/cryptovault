@@ -1,9 +1,10 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccount, useWriteContract } from "wagmi";
 import abi from "../abis/cryptoloan.json";
 import { parseEther } from "viem";
+import { useRouter } from 'next/navigation';
 
 const LoanPage = () => {
   const [amount, setAmount] = useState('');
@@ -11,7 +12,7 @@ const LoanPage = () => {
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
-
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     writeContract(
@@ -35,6 +36,14 @@ const LoanPage = () => {
       }
     );
   };
+  useEffect(() => {
+    if (!address) {
+      setToast({ type: 'error', message: 'Please connect your wallet' });
+    }
+    setTimeout(() => {
+      router.push('/')
+    }, 2500)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">

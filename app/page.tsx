@@ -37,7 +37,7 @@ export default function Home() {
                     src={`${
                       connector.icon
                         ? connector.icon
-                        : "/icons/" + connector.name + ".svg"
+                        : "/icons/" + connector.name.toLowerCase() + ".svg"
                     }`}
                     alt={connector.name}
                     className="w-6 h-6 bg-orange-500 rounded-full hover:rounded-none"
@@ -57,6 +57,11 @@ export default function Home() {
         >
           <section className="text-center space-y-4">
             <h2 className="text-4xl font-bold">Your Web3 Vault</h2>
+            <div className="bg-blue-900/20 p-4 rounded-lg mb-4">
+              <p className="text-blue-300">
+                To use CryptoLoan, you'll need a Web3 wallet like MetaMask or Brave Wallet installed in your browser.
+              </p>
+            </div>
             <p className="text-gray-400 max-w-2xl mx-auto">
               Securely store your Sepolia ETH and borrow up to 150% of your
               deposit after one week. Flexible repayment terms tailored to your

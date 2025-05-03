@@ -45,7 +45,15 @@ const Account = () => {
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const { writeContract } = useWriteContract();
+  useEffect(()=>{
+    if (!address) {
+      setToast({ type: "error", message: "Please connect your wallet" });
+    }
 
+    setTimeout(() => {
+      router.push("/");
+    }, 2500);
+  },[])
   const handleWithdraw = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     writeContract(
