@@ -37,7 +37,7 @@ export default function Home() {
                     src={`${
                       connector.icon
                         ? connector.icon
-                        : "icons/" + connector.name + ".svg"
+                        : "/icons/" + connector.name + ".svg"
                     }`}
                     alt={connector.name}
                     className="w-6 h-6 bg-orange-500 rounded-full hover:rounded-none"
