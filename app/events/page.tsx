@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export default function EventsPage() {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [logs, setLogs] = useState<any>(null);
 
   useEffect(() => {

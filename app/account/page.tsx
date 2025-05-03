@@ -36,7 +36,6 @@ const Account = () => {
     functionName:"loans",
     args: [address]
   })
-  const [repayAmount, setRepayAmount] = useState('');
   const { data: isOverdue } = useReadContract({
     abi,
     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
